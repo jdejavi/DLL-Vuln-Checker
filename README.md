@@ -18,7 +18,6 @@ Bienvenido a **DLL Vuln Searcher**, un script de Python que utiliza técnicas de
   - `re`
   - `time`
   - `datetime`
-  - 
 
 Puedes instalarlas usando pip:
 
