@@ -5,7 +5,7 @@ Bienvenido a **DLL Vuln Searcher**, un script de Python que utiliza técnicas de
 ## 🌟 Características
 
 - **Web Scraping**: Utiliza web scraping para extraer información detallada sobre vulnerabilidades.
-- **Soporte para Múltiples Vendors**: Diseñado para buscar vulnerabilidades en dependencias de diversos vendors, incluyendo NuGet.
+- **Soporte para Múltiples Vendors**: Diseñado para buscar vulnerabilidades en dependencias de diversos vendors, incluyendo NuGet, npm, Cargo, Maven. Para mas información acceder a la web de [security.snyk.io](https://security.snyk.io).
 - **Entrada Flexible**: Lee las dependencias desde un archivo de texto proporcionado por el usuario.
 
 ## 🚀 Cómo Empezar
