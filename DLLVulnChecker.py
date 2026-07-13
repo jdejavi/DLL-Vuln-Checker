@@ -7,56 +7,56 @@ from datetime import datetime
 import sys, signal
 import os
 
-#Clase Vulnerabilidad
+# Vulnerability class
 
-class Vulnerabilidad:
-        def __init__(self, nombre="", criticidad="", componente="", versiones="", descarga="", fecha_publicacion=""):
-                self._nombre = nombre
-                self._criticidad = criticidad
-                self._componente = componente
-                self._versiones = versiones
-                self._descarga = descarga
-                self._fecha_publicacion = fecha_publicacion
+class Vulnerability:
+	def __init__(self, name="", severity="", component="", versions="", download="", publication_date=""):
+		self._name = name
+		self._severity = severity
+		self._component = component
+		self._versions = versions
+		self._download = download
+		self._publication_date = publication_date
 
-        def get_nombre(self):
-                return self._nombre
+	def get_name(self):
+		return self._name
 
-        def get_criticidad(self):
-                return self._criticidad
+	def get_severity(self):
+		return self._severity
 
-        def get_componente(self):
-                return self._componente
+	def get_component(self):
+		return self._component
 
-        def get_versiones(self):
-                return self._versiones
+	def get_versions(self):
+		return self._versions
 
-        def get_descarga(self):
-                return self._descarga
+	def get_download(self):
+		return self._download
 
-        def get_fecha(self):
-                return self._fecha_publicacion
+	def get_date(self):
+		return self._publication_date
 
-        def set_nombre(self, nombre):
-                self._nombre = nombre
+	def set_name(self, name):
+		self._name = name
 
-        def set_criticidad(self, criticidad):
-                self._criticidad = criticidad
+	def set_severity(self, severity):
+		self._severity = severity
 
-        def set_componente(self, componente):
-                self._componente = componente
+	def set_component(self, component):
+		self._component = component
 
-        def set_versiones(self, versiones):
-                self._versiones = versiones
+	def set_versions(self, versions):
+		self._versions = versions
 
-        def set_descarga(self, descarga):
-                self._descarga = descarga
+	def set_download(self, download):
+		self._download = download
 
-        def set_fecha(self, fecha_publicacion):
-                self._fecha_publicacion = fecha_publicacion
+	def set_date(self, publication_date):
+		self._publication_date = publication_date
 
 
 
-#Colores
+# Colors
 
 RED_DARK = '\033[38;5;1m'
 RED = '\033[91m'
@@ -65,7 +65,7 @@ YELLOW = '\033[93m'
 BLUE = '\033[94m'
 RESET = '\033[0m'
 
-#Variables globales
+# Global variables
 
 url = 'https://security.snyk.io/vuln?search='
 
@@ -79,195 +79,195 @@ banner = """
                         ▐                                               ▀
 """
 
-#Funcion para imprimir usando colores sin que se vuelva loca la consola despues
-#       Por eso hay que meterle el RESET
-def print_colores(text, color):
-        print(f"{color}{text}{RESET}")
+# Function to print using colors without messing up the console afterwards
+#	That's why we need to add the RESET
+def print_colors(text, color):
+	print(f"{color}{text}{RESET}")
 
-#Ctrl+C
+# Ctrl+C
 
 def signal_handler(sig, frame):
-        print_colores("\n\n[!] Saliendo...", RED)
-        sys.exit(1)
+	print_colors("\n\n[!] Exiting...", RED)
+	sys.exit(1)
 
-#Funcion que ordena las vulnerabilidades de mas reciente a menos
-def ordenar_vulns_fecha(vulnerabilidades):
+# Function that sorts vulnerabilities from most recent to oldest
+def sort_vulns_by_date(vulnerabilities):
 
-    def obtener_fecha_datetime(vuln):
-        return datetime.strptime(vuln.get_fecha(), "%d %b %Y")
+    def get_date_datetime(vuln):
+        return datetime.strptime(vuln.get_date(), "%d %b %Y")
 
-    vulnerabilidades_ordenadas = sorted(vulnerabilidades, key=obtener_fecha_datetime, reverse=True)
+    sorted_vulnerabilities = sorted(vulnerabilities, key=get_date_datetime, reverse=True)
 
-    return vulnerabilidades_ordenadas
+    return sorted_vulnerabilities
 
-#Funcion que aplica la regex a la respuesta de la peticion para sacar solamente las criticidades de las vulnerabilidades encontradas
-def criticidades(peticion):
-        regexCrit = re.compile(r'(?<=data-v-87993300>).*?(?=<)', re.DOTALL)
+# Function that applies the regex to the request response to extract only the severities of the vulnerabilities found
+def severities(request):
+	regexSev = re.compile(r'(?<=data-v-87993300>).*?(?=<)', re.DOTALL)
 
-        crits = regexCrit.findall(peticion)
+	sevs = regexSev.findall(request)
 
-        filtered_matches = [
-                match.strip() for match in crits
-                if match.strip() and not re.fullmatch(r'<!---->', match.strip())
-        ]
+	filtered_matches = [
+		match.strip() for match in sevs
+		if match.strip() and not re.fullmatch(r'<!---->', match.strip())
+	]
 
-        return filtered_matches
+	return filtered_matches
 
-#Funcion que crea la lista de objetos vulnerabilidad y la devuelve por parametro
-def formatear_respuesta(datos, criticidades):
+# Function that creates the list of vulnerability objects and returns it
+def format_response(data, severities):
 
-        i = 0
-        j = 0
+	i = 0
+	j = 0
 
-        vulns = []
+	vulns = []
 
-        crits = {
-                'C': 'Critica',
-                'H': 'Alta',
-                'M': 'Media',
-                'L': 'Baja'
-        }
+	sevs = {
+		'C': 'Critical',
+		'H': 'High',
+		'M': 'Medium',
+		'L': 'Low'
+	}
 
-        if(len(datos) % 5 == 0):
-                while i < len(datos):
+	if(len(data) % 5 == 0):
+		while i < len(data):
 
-                        vulnerabilidad = Vulnerabilidad()
+			vulnerability = Vulnerability()
 
-                        vulnerabilidad.set_nombre(str(datos[i].strip()))
-                        vulnerabilidad.set_criticidad(str(crits[str(criticidades[j])]))
-                        vulnerabilidad.set_componente(str(datos[i+1].strip()))
-                        vulnerabilidad.set_versiones(str(datos[i+2].strip()))
-                        vulnerabilidad.set_descarga(str(datos[i+3].strip()))
-                        vulnerabilidad.set_fecha(str(datos[i+4].strip()))
+			vulnerability.set_name(str(data[i].strip()))
+			vulnerability.set_severity(str(sevs[str(severities[j])]))
+			vulnerability.set_component(str(data[i+1].strip()))
+			vulnerability.set_versions(str(data[i+2].strip()))
+			vulnerability.set_download(str(data[i+3].strip()))
+			vulnerability.set_date(str(data[i+4].strip()))
 
-                        vulns.append(vulnerabilidad)
-                        i += 5
-                        j += 1
+			vulns.append(vulnerability)
+			i += 5
+			j += 1
 
-        else:
-                while i < len(datos):
+	else:
+		while i < len(data):
 
-                        vulnerabilidad = Vulnerabilidad()
-                        masV = 0
+			vulnerability = Vulnerability()
+			moreV = 0
 
-                        vulnerabilidad.set_nombre(str(datos[i].strip()))
-                        vulnerabilidad.set_criticidad(str(crits[str(criticidades[j])]))
-                        vulnerabilidad.set_componente(str(datos[i+1].strip()))
+			vulnerability.set_name(str(data[i].strip()))
+			vulnerability.set_severity(str(sevs[str(severities[j])]))
+			vulnerability.set_component(str(data[i+1].strip()))
 
-                        versiones = ''
+			versions = ''
 
-                        if(datos[i+3].strip().startswith('(') or datos[i+3].strip().startswith('[')):
-                                while(datos[i+2+masV].strip().startswith('(') or datos[i+2+masV].strip().startswith('[')):
-                                        if not versiones:
-                                                versiones = datos[i+2+masV].strip()
-                                                masV += 1
-                                        else:
-                                                versiones += ', ' + datos[i+2+masV].strip()
-                                                masV += 1
+			if(data[i+3].strip().startswith('(') or data[i+3].strip().startswith('[')):
+				while(data[i+2+moreV].strip().startswith('(') or data[i+2+moreV].strip().startswith('[')):
+					if not versions:
+						versions = data[i+2+moreV].strip()
+						moreV += 1
+					else:
+						versions += ', ' + data[i+2+moreV].strip()
+						moreV += 1
 
-                                vulnerabilidad.set_versiones(versiones)
+				vulnerability.set_versions(versions)
 
-                                vulnerabilidad.set_descarga(str(datos[i+2+masV].strip()))
-                                vulnerabilidad.set_fecha(str(datos[i+3+masV].strip()))
+				vulnerability.set_download(str(data[i+2+moreV].strip()))
+				vulnerability.set_date(str(data[i+3+moreV].strip()))
 
-                                vulns.append(vulnerabilidad)
+				vulns.append(vulnerability)
 
-                                i += (4+masV)
-                                j += 1
-                        else:
+				i += (4+moreV)
+				j += 1
+			else:
 
-                                vulnerabilidad.set_descarga(str(datos[i+3].strip()))
-                                vulnerabilidad.set_fecha(str(datos[i+4].strip()))
+				vulnerability.set_download(str(data[i+3].strip()))
+				vulnerability.set_date(str(data[i+4].strip()))
 
-                                vulns.append(vulnerabilidad)
-                                i += 5
-                                j += 1
-        return vulns
+				vulns.append(vulnerability)
+				i += 5
+				j += 1
+	return vulns
 
-#Funcion que hace la peticion y luego recibe la lista y la imprime
-def hacer_peticion():
-        try:
-                while True:
-                        nombre_archivo = input("Introduce el nombre de donde se van a importar los datos (unicamente extension .txt): ")
-                        if(nombre_archivo.lower().endswith('.txt')):
-                                if(os.path.isfile(nombre_archivo)):
-                                        break
-                                else:
-                                        print_colores("\n[!] No se encuentra el archivo, introduce uno valido", ORANGE)
-                        else:
-                                print_colores("\n[!] La extension del archivo no coincide con la esperada:", ORANGE)
+# Function that makes the request, then receives the list and prints it
+def make_request():
+	try:
+		while True:
+			file_name = input("Enter the name of the file to import the data from (only .txt extension): ")
+			if(file_name.lower().endswith('.txt')):
+				if(os.path.isfile(file_name)):
+					break
+				else:
+					print_colors("\n[!] File not found, please enter a valid one", ORANGE)
+			else:
+				print_colors("\n[!] The file extension does not match the expected one:", ORANGE)
 
-                with open(nombre_archivo, 'r') as f:
-                        for linea in f:
-                                urlFinal = url + linea
+		with open(file_name, 'r') as f:
+			for line in f:
+				final_url = url + line
 
-                                respuesta = requests.get(urlFinal)
-                                contenido = respuesta.text.splitlines()
+				response = requests.get(final_url)
+				content = response.text.splitlines()
 
-                                crit = criticidades(respuesta.text)
+				sev = severities(response.text)
 
-                                regex = re.compile(r'<\!---|<\/span|<\/body|<\/html|Snyk|Disclosed|Policies|Sell|Report|Next')
+				regex = re.compile(r'<\!---|<\/span|<\/body|<\/html|Snyk|Disclosed|Policies|Sell|Report|Next')
 
-                                filtrado1 = [linea for linea in contenido if not regex.search(linea)]
+				filtered1 = [line for line in content if not regex.search(line)]
 
-                                filtrado2 = next((i for i, linea in enumerate(filtrado1) if 'PUBLISHED' in linea), None)
+				filtered2 = next((i for i, line in enumerate(filtered1) if 'PUBLISHED' in line), None)
 
-                                if filtrado2 is not None:
-                                        contenido_relevante = filtrado1[filtrado2 + 1:filtrado2 + 1001]
-                                else:
-                                        contenido_relevante = []
+				if filtered2 is not None:
+					relevant_content = filtered1[filtered2 + 1:filtered2 + 1001]
+				else:
+					relevant_content = []
 
-                                contenido_final = [linea for linea in contenido_relevante if 'PUBLISHED' not in linea]
-                                contenido_final = [linea.replace('&lt;', '<') for linea in contenido_final]
+				final_content = [line for line in relevant_content if 'PUBLISHED' not in line]
+				final_content = [line.replace('&lt;', '<') for line in final_content]
 
-                                respuesta_formateada = formatear_respuesta(contenido_final, crit)
-                                print(f"\t\t{linea}")
+				formatted_response = format_response(final_content, sev)
+				print(f"\t\t{line}")
 
-                                ordenada = ordenar_vulns_fecha(respuesta_formateada)
+				sorted_vulns = sort_vulns_by_date(formatted_response)
 
-                                for vuln in ordenada:
-                                        if((datetime.now().year-3) >= datetime.strptime(vuln.get_fecha(), "%d %b %Y").year):
-                                                continue
-                                        if(vuln.get_criticidad()=='Critica'):
-                                                print_colores("Nombre de la vulnerabilidad: " + vuln.get_nombre(), RED_DARK)
-                                                print_colores(f"\tCriticidad: " + vuln.get_criticidad(), RED_DARK)
-                                                print_colores(f"\tComponente afectado: " + vuln.get_componente(), RED_DARK)
-                                                print_colores(f"\tVersiones afectadas: " + vuln.get_versiones(), RED_DARK)
-                                                print_colores(f"\tDescarga: " + vuln.get_descarga(), RED_DARK)
-                                                print_colores(f"\tFecha de publicacion: " + vuln.get_fecha(), RED_DARK)
-                                        elif(vuln.get_criticidad()=='Alta'):
-                                                print_colores("Nombre de la vulnerabilidad: " + vuln.get_nombre(), RED)
-                                                print_colores(f"\tCriticidad: " + vuln.get_criticidad(), RED)
-                                                print_colores(f"\tComponente afectado: " + vuln.get_componente(), RED)
-                                                print_colores(f"\tVersiones afectadas: " + vuln.get_versiones(), RED)
-                                                print_colores(f"\tDescarga: " + vuln.get_descarga(), RED)
-                                                print_colores(f"\tFecha de publicacion: " + vuln.get_fecha(), RED)
-                                        elif(vuln.get_criticidad()=='Media'):
-                                                print_colores("Nombre de la vulnerabilidad: " + vuln.get_nombre(), ORANGE)
-                                                print_colores(f"\tCriticidad: " + vuln.get_criticidad(), ORANGE)
-                                                print_colores(f"\tComponente afectado: " + vuln.get_componente(), ORANGE)
-                                                print_colores(f"\tVersiones afectadas: " + vuln.get_versiones(), ORANGE)
-                                                print_colores(f"\tDescarga: " + vuln.get_descarga(), ORANGE)
-                                                print_colores(f"\tFecha de publicacion: " + vuln.get_fecha(), ORANGE)
-                                        elif(vuln.get_criticidad()=='Baja'):
-                                                print_colores("Nombre de la vulnerabilidad: " + vuln.get_nombre(), YELLOW)
-                                                print_colores(f"\tCriticidad: " + vuln.get_criticidad(), YELLOW)
-                                                print_colores(f"\tComponente afectado: " + vuln.get_componente(), YELLOW)
-                                                print_colores(f"\tVersiones afectadas: " + vuln.get_versiones(), YELLOW)
-                                                print_colores(f"\tDescarga: " + vuln.get_descarga(), YELLOW)
-                                                print_colores(f"\tFecha de publicacion: " + vuln.get_fecha(), YELLOW)
-                                print("\n")
+				for vuln in sorted_vulns:
+					if((datetime.now().year-3) >= datetime.strptime(vuln.get_date(), "%d %b %Y").year):
+						continue
+					if(vuln.get_severity()=='Critical'):
+						print_colors("Vulnerability name: " + vuln.get_name(), RED_DARK)
+						print_colors(f"\tSeverity: " + vuln.get_severity(), RED_DARK)
+						print_colors(f"\tAffected component: " + vuln.get_component(), RED_DARK)
+						print_colors(f"\tAffected versions: " + vuln.get_versions(), RED_DARK)
+						print_colors(f"\tDownload: " + vuln.get_download(), RED_DARK)
+						print_colors(f"\tPublication date: " + vuln.get_date(), RED_DARK)
+					elif(vuln.get_severity()=='High'):
+						print_colors("Vulnerability name: " + vuln.get_name(), RED)
+						print_colors(f"\tSeverity: " + vuln.get_severity(), RED)
+						print_colors(f"\tAffected component: " + vuln.get_component(), RED)
+						print_colors(f"\tAffected versions: " + vuln.get_versions(), RED)
+						print_colors(f"\tDownload: " + vuln.get_download(), RED)
+						print_colors(f"\tPublication date: " + vuln.get_date(), RED)
+					elif(vuln.get_severity()=='Medium'):
+						print_colors("Vulnerability name: " + vuln.get_name(), ORANGE)
+						print_colors(f"\tSeverity: " + vuln.get_severity(), ORANGE)
+						print_colors(f"\tAffected component: " + vuln.get_component(), ORANGE)
+						print_colors(f"\tAffected versions: " + vuln.get_versions(), ORANGE)
+						print_colors(f"\tDownload: " + vuln.get_download(), ORANGE)
+						print_colors(f"\tPublication date: " + vuln.get_date(), ORANGE)
+					elif(vuln.get_severity()=='Low'):
+						print_colors("Vulnerability name: " + vuln.get_name(), YELLOW)
+						print_colors(f"\tSeverity: " + vuln.get_severity(), YELLOW)
+						print_colors(f"\tAffected component: " + vuln.get_component(), YELLOW)
+						print_colors(f"\tAffected versions: " + vuln.get_versions(), YELLOW)
+						print_colors(f"\tDownload: " + vuln.get_download(), YELLOW)
+						print_colors(f"\tPublication date: " + vuln.get_date(), YELLOW)
+				print("\n")
 
-        except FileNotFoundError:
-                return "Error: El fichero no existe."
-        except IOError:
-                return "Error: No se puede leer."
+	except FileNotFoundError:
+		return "Error: The file does not exist."
+	except IOError:
+		return "Error: Cannot read the file."
 
-#Main funtion
+# Main function
 if __name__ == "__main__":
-        signal.signal(signal.SIGINT, signal_handler)
+	signal.signal(signal.SIGINT, signal_handler)
 
-        print(banner)
-        print("Herramienta hecha con muxo amor por m4t1. <3\n")
-        time.sleep(3)
-        hacer_peticion()
+	print(banner)
+	print("Tool made with lots of love by m4t1. <3\n")
+	time.sleep(3)
+	make_request()
