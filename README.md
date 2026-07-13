@@ -5,7 +5,7 @@ Welcome to **DLL Vuln Searcher**, a Python script that uses web scraping techniq
 - **Web Scraping**: Uses web scraping to extract detailed information about vulnerabilities.
 - **Support for Multiple Vendors**: Designed to search for vulnerabilities in dependencies from various vendors, including NuGet, npm, Cargo, Maven. For more information, visit [security.snyk.io](https://security.snyk.io).
 - **Flexible Input**: Reads dependencies from a text file provided by the user.
-- 
+
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
@@ -38,7 +38,7 @@ pip install requests
 
 3. **Provide the File Name**:
    - Enter the name of the text file when the script prompts you. Make sure the file is in the same directory as the script, or provide the full path.
-   - 
+   
 ### 3. Example Run
 
 ```plaintext
