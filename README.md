@@ -1,104 +1,85 @@
 # 🚀 DLL Vuln Searcher 🛡️
+Welcome to **DLL Vuln Searcher**, a Python script that uses web scraping techniques to search for vulnerabilities in the dependencies of different vendors from [security.snyk.io](https://security.snyk.io).
 
-Bienvenido a **DLL Vuln Searcher**, un script de Python que utiliza técnicas de web scraping para buscar vulnerabilidades en las dependencias de diferentes vendors desde la web de [security.snyk.io](https://security.snyk.io).
+## 🌟 Features
+- **Web Scraping**: Uses web scraping to extract detailed information about vulnerabilities.
+- **Support for Multiple Vendors**: Designed to search for vulnerabilities in dependencies from various vendors, including NuGet, npm, Cargo, Maven. For more information, visit [security.snyk.io](https://security.snyk.io).
+- **Flexible Input**: Reads dependencies from a text file provided by the user.
+- 
+## 🚀 Getting Started
 
-## 🌟 Características
-
-- **Web Scraping**: Utiliza web scraping para extraer información detallada sobre vulnerabilidades.
-- **Soporte para Múltiples Vendors**: Diseñado para buscar vulnerabilidades en dependencias de diversos vendors, incluyendo NuGet, npm, Cargo, Maven. Para mas información acceder a la web de [security.snyk.io](https://security.snyk.io).
-- **Entrada Flexible**: Lee las dependencias desde un archivo de texto proporcionado por el usuario.
-
-## 🚀 Cómo Empezar
-
-### 1. Requisitos Previos
-
-- Python 3.x instalado en tu máquina.
-- Las siguientes librerías de Python:
+### 1. Prerequisites
+- Python 3.x installed on your machine.
+- The following Python libraries:
   - `requests`
   - `re`
   - `time`
   - `datetime`
-
-Puedes instalarlas usando pip:
-
+You can install them using pip:
 ```bash
-pip install requests re time datetime
+pip install requests
 ```
+> Note: `re`, `time`, and `datetime` are part of the Python standard library and do not need to be installed.
 
-### 2. Uso del Script
+### 2. Using the Script
 
-1. **Prepara tu Archivo de Dependencias**:
-   - Crea un archivo `.txt` que contenga las dependencias que deseas verificar, cada una en una línea diferente. Ejemplo:
+1. **Prepare Your Dependencies File**:
+   - Create a `.txt` file containing the dependencies you want to check, each on a separate line. Example:
      ```
      Newtonsoft.Json
      NUnit
      ```
 
-2. **Ejecuta el Script**:
-   - Al ejecutar el script, te pedirá que ingreses el nombre del archivo de texto que contiene las dependencias.
-   
-   ```bash
+2. **Run the Script**:
+   - When you run the script, it will ask you to enter the name of the text file containing the dependencies.
+```bash
    python3 DLLVulnSearcher.py
-   ```
-
-3. **Proporciona el Nombre del Archivo**:
-   - Ingresa el nombre del archivo de texto cuando el script lo solicite. Asegúrate de que el archivo esté en el mismo directorio que el script o proporciona la ruta completa.
-
-### 3. Ejemplo de Ejecución
-
-```plaintext
-Ingrese el nombre del archivo de dependencias: example.txt
-
-		RazorEngine
-
-Nombre de la vulnerabilidad: Arbitrary Code Execution
-	Criticidad: Alta
-	Componente afectado: razorengine
-	Versiones afectadas: [0,]
-	Descarga: NuGet
-	Fecha de publicacion: 6 Mar 2022
-
-
-		Microsoft.Owin
-
-Nombre de la vulnerabilidad: Denial of Service (DoS)
-	Criticidad: Alta
-	Componente afectado: microsoft.owin
-	Versiones afectadas: [,4.2.2)
-	Descarga: NuGet
-	Fecha de publicacion: 31 Aug 2022
-Nombre de la vulnerabilidad: Denial of Service (DoS)
-	Criticidad: Alta
-	Componente afectado: microsoft.owin.security.cookies
-	Versiones afectadas: [,4.2.2)
-	Descarga: NuGet
-	Fecha de publicacion: 31 Aug 2022
-
 ```
 
-## 🔧 Personalización
+3. **Provide the File Name**:
+   - Enter the name of the text file when the script prompts you. Make sure the file is in the same directory as the script, or provide the full path.
+   - 
+### 3. Example Run
 
-Puedes modificar el script para ajustar los vendors o la forma en que se manejan las dependencias. Este es solo un punto de partida, y las posibilidades son infinitas.
+```plaintext
+Enter the name of the dependencies file: example.txt
+		RazorEngine
+Vulnerability name: Arbitrary Code Execution
+	Severity: High
+	Affected component: razorengine
+	Affected versions: [0,]
+	Download: NuGet
+	Publication date: 6 Mar 2022
+		Microsoft.Owin
+Vulnerability name: Denial of Service (DoS)
+	Severity: High
+	Affected component: microsoft.owin
+	Affected versions: [,4.2.2)
+	Download: NuGet
+	Publication date: 31 Aug 2022
+Vulnerability name: Denial of Service (DoS)
+	Severity: High
+	Affected component: microsoft.owin.security.cookies
+	Affected versions: [,4.2.2)
+	Download: NuGet
+	Publication date: 31 Aug 2022
+```
 
-## 📄 Licencia
+## 🔧 Customization
+You can modify the script to adjust the vendors or the way dependencies are handled. This is just a starting point, and the possibilities are endless.
 
-Este proyecto está bajo la Licencia MIT. Puedes obtener más detalles en el archivo LICENSE.
+## 📄 License
+This project is licensed under the MIT License. You can find more details in the LICENSE file.
 
-## 🤝 Contribuciones
+## 🤝 Contributing
+Contributions are welcome! If you have any improvements or suggestions, please open an issue or create a pull request.
 
-¡Las contribuciones son bienvenidas! Si tienes alguna mejora o sugerencia, por favor abre un issue o crea un pull request.
-
-## 📬 Contacto
-
-Para cualquier consulta, no dudes en contactarme a través de mi perfil de GitHub.
+## 📬 Contact
+For any questions, feel free to reach out through my GitHub profile.
 
 ---
-
-¡Gracias por usar **DLL Vuln Searcher**! Juntos, hagamos que nuestras dependencias sean más seguras. 🛡️
-
+Thanks for using **DLL Vuln Searcher**! Together, let's make our dependencies more secure. 🛡️
 ---
-
-Hecho con ❤️ por m4t1
+Made with ❤️ by m4t1
 ---
-
-**Nota**: Este proyecto no está afiliado ni respaldado por Snyk. Es una herramienta creada independientemente para ayudar en la búsqueda de vulnerabilidades.
+**Note**: This project is not affiliated with or endorsed by Snyk. It is an independently created tool to help with vulnerability searching.
